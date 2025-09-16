@@ -1,0 +1,223 @@
+@if (activeLayer(); as layer) {
+  <div class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50" (click)="stateService.closeLayerStylesModal()">
+    <div class="bg-gray-800 rounded-lg shadow-2xl p-6 w-full max-w-sm text-white flex flex-col" (click)="$event.stopPropagation()">
+      <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
+        <h2 class="text-xl font-bold text-cyan-400">Layer Styles</h2>
+        <button (click)="stateService.closeLayerStylesModal()" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+      </div>
+      
+      <div class="space-y-4 overflow-y-auto pr-2 -mr-2 max-h-[70vh]">
+        
+        <!-- Bevel & Emboss -->
+        <div class="bg-gray-900/50 p-4 rounded-lg">
+          <div class="flex items-center">
+            <input type="checkbox" id="be-enable" [checked]="layer.styles.bevelAndEmboss.enabled" (change)="toggleBevelAndEmboss($event)" class="h-4 w-4 rounded bg-gray-700 border-gray-600 text-cyan-500 focus:ring-cyan-600">
+            <label for="be-enable" class="ml-3 font-semibold text-lg flex-grow">Bevel & Emboss</label>
+          </div>
+          @if (layer.styles.bevelAndEmboss.enabled) {
+            <div class="space-y-3 pl-7 pt-3">
+              <div class="grid grid-cols-5 items-center">
+                <label for="be-depth" class="text-sm text-gray-400 col-span-2">Depth</label>
+                <input id="be-depth" type="range" min="1" max="100" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.bevelAndEmboss.depth" (input)="updateBevelAndEmboss($event, 'depth')">
+              </div>
+              <div class="grid grid-cols-5 items-center">
+                <label for="be-blur" class="text-sm text-gray-400 col-span-2">Soften</label>
+                <input id="be-blur" type="range" min="0" max="50" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.bevelAndEmboss.blur" (input)="updateBevelAndEmboss($event, 'blur')">
+              </div>
+               <div class="grid grid-cols-5 items-center">
+                <label for="be-angle" class="text-sm text-gray-400 col-span-2">Angle</label>
+                <input id="be-angle" type="range" min="0" max="360" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.bevelAndEmboss.angle" (input)="updateBevelAndEmboss($event, 'angle')">
+              </div>
+            </div>
+          }
+        </div>
+        
+        <!-- Stroke -->
+        <div class="bg-gray-900/50 p-4 rounded-lg">
+          <div class="flex items-center">
+            <input type="checkbox" id="st-enable" [checked]="layer.styles.stroke.enabled" (change)="toggleStroke($event)" class="h-4 w-4 rounded bg-gray-700 border-gray-600 text-cyan-500 focus:ring-cyan-600">
+            <label for="st-enable" class="ml-3 font-semibold text-lg flex-grow">Stroke</label>
+          </div>
+          @if (layer.styles.stroke.enabled) {
+            <div class="space-y-3 pl-7 pt-3">
+              <div class="grid grid-cols-5 items-center">
+                <label class="text-sm text-gray-400 col-span-2">Color</label>
+                <input type="color" class="w-full h-8 p-1 bg-gray-700 border border-gray-600 rounded cursor-pointer col-span-3" [value]="layer.styles.stroke.color" (input)="updateStroke($event, 'color')">
+              </div>
+              <div class="grid grid-cols-5 items-center">
+                <label for="st-size" class="text-sm text-gray-400 col-span-2">Size</label>
+                <input id="st-size" type="range" min="1" max="100" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.stroke.size" (input)="updateStroke($event, 'size')">
+              </div>
+               <div class="grid grid-cols-5 items-center">
+                <label for="st-opacity" class="text-sm text-gray-400 col-span-2">Opacity</label>
+                <input id="st-opacity" type="range" min="0" max="1" step="0.01" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.stroke.opacity" (input)="updateStroke($event, 'opacity')">
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Inner Glow -->
+        <div class="bg-gray-900/50 p-4 rounded-lg">
+          <div class="flex items-center">
+            <input type="checkbox" id="ig-enable" [checked]="layer.styles.innerGlow.enabled" (change)="toggleInnerGlow($event)" class="h-4 w-4 rounded bg-gray-700 border-gray-600 text-cyan-500 focus:ring-cyan-600">
+            <label for="ig-enable" class="ml-3 font-semibold text-lg">Inner Glow</label>
+          </div>
+          @if (layer.styles.innerGlow.enabled) {
+            <div class="space-y-3 pl-7 pt-3">
+              <div class="grid grid-cols-5 items-center">
+                <label class="text-sm text-gray-400 col-span-2">Color</label>
+                 <input type="color" class="w-full h-8 p-1 bg-gray-700 border border-gray-600 rounded cursor-pointer col-span-3" [value]="layer.styles.innerGlow.color" (input)="updateInnerGlow($event, 'color')">
+              </div>
+              <div class="grid grid-cols-5 items-center">
+                <label for="ig-blur" class="text-sm text-gray-400 col-span-2">Size</label>
+                <input id="ig-blur" type="range" min="0" max="100" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.innerGlow.blur" (input)="updateInnerGlow($event, 'blur')">
+              </div>
+              <div class="grid grid-cols-5 items-center">
+                <label for="ig-opacity" class="text-sm text-gray-400 col-span-2">Opacity</label>
+                <input id="ig-opacity" type="range" min="0" max="1" step="0.01" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.innerGlow.opacity" (input)="updateInnerGlow($event, 'opacity')">
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Satin -->
+        <div class="bg-gray-900/50 p-4 rounded-lg">
+          <div class="flex items-center">
+            <input type="checkbox" id="sa-enable" [checked]="layer.styles.satin.enabled" (change)="toggleSatin($event)" class="h-4 w-4 rounded bg-gray-700 border-gray-600 text-cyan-500 focus:ring-cyan-600">
+            <label for="sa-enable" class="ml-3 font-semibold text-lg">Satin</label>
+          </div>
+          @if (layer.styles.satin.enabled) {
+            <div class="space-y-3 pl-7 pt-3">
+              <div class="grid grid-cols-5 items-center">
+                <label class="text-sm text-gray-400 col-span-2">Color</label>
+                 <input type="color" class="w-full h-8 p-1 bg-gray-700 border border-gray-600 rounded cursor-pointer col-span-3" [value]="layer.styles.satin.color" (input)="updateSatin($event, 'color')">
+              </div>
+              <div class="grid grid-cols-5 items-center">
+                <label for="sa-distance" class="text-sm text-gray-400 col-span-2">Distance</label>
+                <input id="sa-distance" type="range" min="0" max="100" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.satin.distance" (input)="updateSatin($event, 'distance')">
+              </div>
+              <div class="grid grid-cols-5 items-center">
+                <label for="sa-size" class="text-sm text-gray-400 col-span-2">Size</label>
+                <input id="sa-size" type="range" min="0" max="100" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.satin.size" (input)="updateSatin($event, 'size')">
+              </div>
+               <div class="grid grid-cols-5 items-center">
+                <label for="sa-opacity" class="text-sm text-gray-400 col-span-2">Opacity</label>
+                <input id="sa-opacity" type="range" min="0" max="1" step="0.01" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.satin.opacity" (input)="updateSatin($event, 'opacity')">
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Color Overlay -->
+        <div class="bg-gray-900/50 p-4 rounded-lg">
+          <div class="flex items-center">
+            <input type="checkbox" id="co-enable" [checked]="layer.styles.colorOverlay.enabled" (change)="toggleColorOverlay($event)" class="h-4 w-4 rounded bg-gray-700 border-gray-600 text-cyan-500 focus:ring-cyan-600">
+            <label for="co-enable" class="ml-3 font-semibold text-lg">Color Overlay</label>
+          </div>
+          @if (layer.styles.colorOverlay.enabled) {
+            <div class="space-y-3 pl-7 pt-3">
+              <div class="grid grid-cols-5 items-center">
+                <label class="text-sm text-gray-400 col-span-2">Color</label>
+                 <input type="color" class="w-full h-8 p-1 bg-gray-700 border border-gray-600 rounded cursor-pointer col-span-3" [value]="layer.styles.colorOverlay.color" (input)="updateColorOverlay($event, 'color')">
+              </div>
+              <div class="grid grid-cols-5 items-center">
+                <label for="co-opacity" class="text-sm text-gray-400 col-span-2">Opacity</label>
+                <input id="co-opacity" type="range" min="0" max="1" step="0.01" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.colorOverlay.opacity" (input)="updateColorOverlay($event, 'opacity')">
+              </div>
+            </div>
+          }
+        </div>
+        
+        <!-- Gradient Overlay -->
+        <div class="bg-gray-900/50 p-4 rounded-lg">
+          <div class="flex items-center">
+            <input type="checkbox" id="go-enable" [checked]="layer.styles.gradientOverlay.enabled" (change)="toggleGradientOverlay($event)" class="h-4 w-4 rounded bg-gray-700 border-gray-600 text-cyan-500 focus:ring-cyan-600">
+            <label for="go-enable" class="ml-3 font-semibold text-lg">Gradient Overlay</label>
+          </div>
+          @if (layer.styles.gradientOverlay.enabled) {
+            <div class="space-y-3 pl-7 pt-3">
+              <div class="grid grid-cols-5 items-center">
+                <label class="text-sm text-gray-400 col-span-2">Gradient</label>
+                <div class="col-span-3 flex items-center space-x-1 h-8">
+                  <input type="color" class="w-full h-full p-0 bg-gray-700 border border-gray-600 rounded cursor-pointer" [value]="layer.styles.gradientOverlay.startColor" (input)="updateGradientOverlay($event, 'startColor')">
+                  <input type="color" class="w-full h-full p-0 bg-gray-700 border border-gray-600 rounded cursor-pointer" [value]="layer.styles.gradientOverlay.endColor" (input)="updateGradientOverlay($event, 'endColor')">
+                </div>
+              </div>
+              <div class="grid grid-cols-5 items-center">
+                <label for="go-angle" class="text-sm text-gray-400 col-span-2">Angle</label>
+                <input id="go-angle" type="range" min="0" max="360" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.gradientOverlay.angle" (input)="updateGradientOverlay($event, 'angle')">
+              </div>
+              <div class="grid grid-cols-5 items-center">
+                <label for="go-opacity" class="text-sm text-gray-400 col-span-2">Opacity</label>
+                <input id="go-opacity" type="range" min="0" max="1" step="0.01" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.gradientOverlay.opacity" (input)="updateGradientOverlay($event, 'opacity')">
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Outer Glow -->
+        <div class="bg-gray-900/50 p-4 rounded-lg">
+          <div class="flex items-center">
+            <input type="checkbox" id="og-enable" [checked]="layer.styles.outerGlow.enabled" (change)="toggleOuterGlow($event)" class="h-4 w-4 rounded bg-gray-700 border-gray-600 text-cyan-500 focus:ring-cyan-600">
+            <label for="og-enable" class="ml-3 font-semibold text-lg">Outer Glow</label>
+          </div>
+          @if (layer.styles.outerGlow.enabled) {
+            <div class="space-y-3 pl-7 pt-3">
+              <div class="grid grid-cols-5 items-center">
+                <label class="text-sm text-gray-400 col-span-2">Color</label>
+                 <input type="color" class="w-full h-8 p-1 bg-gray-700 border border-gray-600 rounded cursor-pointer col-span-3" [value]="layer.styles.outerGlow.color" (input)="updateOuterGlow($event, 'color')">
+              </div>
+              <div class="grid grid-cols-5 items-center">
+                <label for="og-blur" class="text-sm text-gray-400 col-span-2">Size</label>
+                <input id="og-blur" type="range" min="0" max="150" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.outerGlow.blur" (input)="updateOuterGlow($event, 'blur')">
+              </div>
+               <div class="grid grid-cols-5 items-center">
+                <label for="og-opacity" class="text-sm text-gray-400 col-span-2">Opacity</label>
+                <input id="og-opacity" type="range" min="0" max="1" step="0.01" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.outerGlow.opacity" (input)="updateOuterGlow($event, 'opacity')">
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Drop Shadow -->
+        <div class="bg-gray-900/50 p-4 rounded-lg">
+          <div class="flex items-center">
+            <input type="checkbox" id="ds-enable" [checked]="layer.styles.dropShadow.enabled" (change)="toggleDropShadow($event)" class="h-4 w-4 rounded bg-gray-700 border-gray-600 text-cyan-500 focus:ring-cyan-600">
+            <label for="ds-enable" class="ml-3 font-semibold text-lg">Drop Shadow</label>
+          </div>
+          @if (layer.styles.dropShadow.enabled) {
+            <div class="space-y-3 pl-7 pt-3">
+              <div class="grid grid-cols-5 items-center">
+                <label class="text-sm text-gray-400 col-span-2">Color</label>
+                <input type="color" class="w-full h-8 p-1 bg-gray-700 border border-gray-600 rounded cursor-pointer col-span-3" [value]="layer.styles.dropShadow.color" (input)="updateDropShadow($event, 'color')">
+              </div>
+              <div class="grid grid-cols-5 items-center">
+                <label for="ds-opacity" class="text-sm text-gray-400 col-span-2">Opacity</label>
+                <input id="ds-opacity" type="range" min="0" max="1" step="0.01" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.dropShadow.opacity" (input)="updateDropShadow($event, 'opacity')">
+              </div>
+              <div class="grid grid-cols-5 items-center">
+                <label for="ds-blur" class="text-sm text-gray-400 col-span-2">Blur</label>
+                <input id="ds-blur" type="range" min="0" max="100" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.dropShadow.blur" (input)="updateDropShadow($event, 'blur')">
+              </div>
+              <div class="grid grid-cols-5 items-center">
+                <label for="ds-offsetX" class="text-sm text-gray-400 col-span-2">Offset X</label>
+                <input id="ds-offsetX" type="range" min="-50" max="50" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.dropShadow.offsetX" (input)="updateDropShadow($event, 'offsetX')">
+              </div>
+              <div class="grid grid-cols-5 items-center">
+                <label for="ds-offsetY" class="text-sm text-gray-400 col-span-2">Offset Y</label>
+                <input id="ds-offsetY" type="range" min="-50" max="50" class="col-span-3 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" [value]="layer.styles.dropShadow.offsetY" (input)="updateDropShadow($event, 'offsetY')">
+              </div>
+            </div>
+          }
+        </div>
+
+      </div>
+
+      <div class="mt-6 flex justify-end pt-4 border-t border-gray-700">
+        <button (click)="stateService.closeLayerStylesModal()" class="px-6 py-2 rounded-md bg-cyan-600 hover:bg-cyan-500 font-semibold transition-colors">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,52 @@
+<div class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50" (click)="cancel()">
+  <div class="bg-gray-800 rounded-lg shadow-2xl p-8 w-full max-w-md text-white" (click)="$event.stopPropagation()">
+    <h2 class="text-2xl font-bold mb-6 text-center text-cyan-400">Resize Canvas</h2>
+    
+    <div class="space-y-6">
+      <div class="flex items-center space-x-4">
+        <div>
+          <label for="canvasWidthResize" class="block text-sm font-medium text-gray-400 mb-2">Width (px)</label>
+          <input type="number" id="canvasWidthResize" [value]="width()" (input)="updateWidth($event)" min="1" max="8000" class="bg-gray-900 border border-gray-700 rounded-md w-full p-2 text-center">
+        </div>
+        <div class="text-gray-500 pt-8">x</div>
+        <div>
+          <label for="canvasHeightResize" class="block text-sm font-medium text-gray-400 mb-2">Height (px)</label>
+          <input type="number" id="canvasHeightResize" [value]="height()" (input)="updateHeight($event)" min="1" max="8000" class="bg-gray-900 border border-gray-700 rounded-md w-full p-2 text-center">
+        </div>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-gray-400 mb-2 text-center">Anchor</label>
+        <div class="grid grid-cols-3 gap-2 w-24 mx-auto bg-gray-900 p-2 rounded-md">
+          @for (a of anchors; track a) {
+            <button 
+              (click)="setAnchor(a)"
+              class="w-6 h-6 rounded-sm flex p-0.5 border-2 transition-colors"
+              [class]="anchor() === a ? 'bg-cyan-500 border-cyan-300' : 'bg-gray-700 border-gray-600 hover:bg-gray-600'"
+              [class.justify-start]="a.includes('left')"
+              [class.justify-center]="a.includes('center') || a.includes('middle')"
+              [class.justify-end]="a.includes('right')"
+              [class.items-start]="a.includes('top')"
+              [class.items-center]="a.includes('center') || a.includes('middle')"
+              [class.items-end]="a.includes('bottom')">
+                <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 flex justify-end space-x-4">
+      <button 
+        (click)="cancel()"
+        class="px-6 py-2 rounded-md bg-gray-600 hover:bg-gray-500 transition-colors">
+        Cancel
+      </button>
+      <button 
+        (click)="resize()"
+        class="px-6 py-2 rounded-md bg-cyan-600 hover:bg-cyan-500 font-semibold transition-colors">
+        Resize
+      </button>
+    </div>
+  </div>
+</div>

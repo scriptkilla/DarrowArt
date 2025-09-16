@@ -1,0 +1,65 @@
+<main class="h-screen w-screen bg-gray-700 flex flex-col text-white overflow-hidden font-sans">
+  <app-toolbar class="flex-shrink-0"></app-toolbar>
+  <div class="flex flex-row flex-grow overflow-hidden">
+    <div class="flex-grow relative bg-gray-800 flex items-center justify-center overflow-auto">
+      <app-canvas></app-canvas>
+
+      <!-- View Controls -->
+      <div class="absolute bottom-4 left-4 bg-gray-900 bg-opacity-80 backdrop-blur-sm rounded-lg shadow-lg text-white flex items-center space-x-2 p-1.5 text-sm">
+        <button (click)="zoomOut()" title="Zoom Out" class="p-2 rounded-md hover:bg-gray-700 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+          </svg>
+        </button>
+        <span class="font-mono w-16 text-center" title="Zoom Level">{{ zoomPercentage() }}</span>
+        <button (click)="zoomIn()" title="Zoom In" class="p-2 rounded-md hover:bg-gray-700 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+        <div class="border-l border-gray-600 h-6 mx-1"></div>
+        <button (click)="stateService.resetView()" title="Fit to Screen" class="p-2 rounded-md hover:bg-gray-700 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4m12 0h-4v4m0 8v4h-4m-8 0H8v-4" />
+          </svg>
+        </button>
+        <div class="border-l border-gray-600 h-6 mx-1"></div>
+         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 9a9 9 0 0114.12-5.12M20 15a9 9 0 01-14.12 5.12" />
+        </svg>
+        <input type="range" min="-180" max="180" [value]="stateService.rotation()" (input)="stateService.setRotation(+$any($event.target).value)" class="w-24 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+        <span class="font-mono w-12 text-center" title="Rotation Angle">{{ stateService.rotation() }}°</span>
+      </div>
+
+      <!-- Copyright Notice -->
+      <div class="absolute bottom-1 left-4 text-xs text-gray-500 pointer-events-none">
+        DarrowArt © 2025, all rights reserved.
+      </div>
+    </div>
+    
+    @if (stateService.isLayersPanelVisible()) {
+      <app-layers-panel class="flex-shrink-0"></app-layers-panel>
+    }
+  </div>
+
+  @if (stateService.isNewCanvasModalVisible()) {
+    <app-new-canvas-modal></app-new-canvas-modal>
+  }
+
+  @if (stateService.isResizeCanvasModalVisible()) {
+    <app-resize-canvas-modal></app-resize-canvas-modal>
+  }
+
+  @if (stateService.editingStylesForLayerId()) {
+    <app-layer-styles-modal></app-layer-styles-modal>
+  }
+
+  @if (stateService.isBrushStudioVisible()) {
+    <app-brush-studio-modal></app-brush-studio-modal>
+  }
+
+  @if (stateService.isGenerateImageModalVisible()) {
+    <app-generate-image-modal></app-generate-image-modal>
+  }
+</main>

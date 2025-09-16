@@ -1,0 +1,5 @@
+{
+  "name": "DarrowArt",
+  "description": "A web-based drawing application inspired by Procreate, built with Angular and Tailwind CSS. It features a responsive canvas, various brush tools, color selection, and the ability to save your artwork.",
+  "requestFramePermissions": []
+}

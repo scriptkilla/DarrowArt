@@ -1,0 +1,9 @@
+<canvas #mainCanvas 
+  class="absolute top-0 left-0 w-full h-full bg-transparent"
+  style="touch-action: none;"
+  (pointerdown)="onPointerDown($event)"
+  (pointermove)="onPointerMove($event)"
+  (pointerup)="onPointerUp($event)"
+  (pointerleave)="onPointerLeave($event)"
+  (wheel)="onWheel($event)"
+></canvas>

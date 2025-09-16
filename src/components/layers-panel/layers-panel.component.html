@@ -1,0 +1,99 @@
+<div class="w-72 bg-gray-900 p-2 flex flex-col shadow-lg text-white">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-lg font-bold">Layers</h2>
+  </div>
+
+  <!-- Layer List -->
+  <div class="flex-grow overflow-y-auto pr-1">
+    <div class="flex flex-col-reverse space-y-2 space-y-reverse">
+      @for (layer of stateService.layers(); track layer.id) {
+        <div 
+          (click)="stateService.selectLayer(layer.id)"
+          class="p-2 rounded-lg cursor-pointer border-2 transition-colors"
+          [class]="layer.id === stateService.activeLayerId() ? 'bg-gray-700 border-cyan-400' : 'bg-gray-800 border-transparent hover:bg-gray-700'">
+          
+          <div class="flex items-start justify-between space-x-2">
+            <div class="flex-grow w-0"> <!-- Flex grow container for truncation -->
+              <select 
+                [value]="layer.blendMode"
+                (change)="handleBlendModeChange($event, layer.id)"
+                (click)="$event.stopPropagation()"
+                class="w-full bg-gray-600 text-white text-xs rounded p-1 mb-2 border border-gray-500 appearance-none text-center">
+                @for (mode of blendModes; track mode.value) {
+                  <option [value]="mode.value">{{ mode.name }}</option>
+                }
+              </select>
+              @if (editingLayerId() === layer.id) {
+                <input
+                  #renameInput
+                  type="text"
+                  [value]="layer.name"
+                  class="bg-gray-600 text-white w-full rounded px-1 -my-0.5 layer-rename-input"
+                  (click)="$event.stopPropagation()"
+                  (blur)="finishEditing(layer.id, renameInput.value)"
+                  (keydown.enter)="finishEditing(layer.id, renameInput.value); $event.preventDefault()">
+              } @else {
+                <span class="font-semibold truncate block px-1" (dblclick)="$event.stopPropagation(); startEditing(layer.id)">{{ layer.name }}</span>
+              }
+            </div>
+            <div class="flex-shrink-0 pt-1 flex items-center space-x-2">
+               <button 
+                title="Layer Styles"
+                (click)="$event.stopPropagation(); stateService.editLayerStyles(layer.id)"
+                class="font-mono text-sm font-bold rounded-sm px-1 transition-colors"
+                [class]="hasActiveStyles(layer) ? 'text-cyan-400 bg-gray-600' : 'text-gray-400 hover:bg-gray-600'">
+                fx
+              </button>
+              <button 
+                title="Toggle Visibility" 
+                (click)="$event.stopPropagation(); handleVisibilityToggle(layer.id, layer.isVisible)">
+                @if (layer.isVisible) {
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                  </svg>
+                } @else {
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zM10 12a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                    <path d="M2.998 10.332a9.96 9.96 0 011.61-3.26C6.072 4.49 8.03 3.5 10 3.5a4.49 4.49 0 012.164.512l-1.414 1.414A2.012 2.012 0 0010 5a2 2 0 00-2 2c0 .199.03.393.086.582L6.15 9.51A9.96 9.96 0 002.998 10.332zM16.293 17.707a1 1 0 001.414-1.414l-14-14a1 1 0 00-1.414 1.414l14 14z" />
+                 </svg>
+                }
+              </button>
+            </div>
+          </div>
+          <div class="mt-2">
+            <label class="text-xs text-gray-400">Opacity: {{ (layer.opacity * 100).toFixed(0) }}%</label>
+            <input type="range" min="0" max="1" step="0.01" [value]="layer.opacity" 
+              class="w-full h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer"
+              (input)="$event.stopPropagation(); handleOpacityChange($event, layer.id)"
+            />
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Layer Actions -->
+  <div class="pt-2 border-t border-gray-700 mt-2 flex items-center justify-center space-x-2">
+    <button title="Add Layer" (click)="stateService.addNewLayer()" class="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+    </button>
+    <button title="Delete Layer" (click)="stateService.deleteLayer(stateService.activeLayerId()!)" [disabled]="stateService.layers().length <= 1" class="p-2 bg-gray-700 hover:bg-red-500 rounded-lg disabled:opacity-50 disabled:hover:bg-gray-700">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+      </svg>
+    </button>
+    <button title="Move Layer Up" (click)="stateService.moveLayerUp(stateService.activeLayerId()!)" class="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+      </svg>
+    </button>
+    <button title="Move Layer Down" (click)="stateService.moveLayerDown(stateService.activeLayerId()!)" class="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+    </button>
+  </div>
+</div>
